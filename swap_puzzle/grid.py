@@ -55,10 +55,11 @@ class Grid():
 
     def is_sorted(self):
         """
-        Checks is the current state of the grid is sorte and returns the answer as a boolean.
+        Checks is the current state of the grid is sorted and returns the answer as a boolean.
         """
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        n = self.n
+        m = self.m
+        return self.state == [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]
 
     def swap(self, cell1, cell2):
         """
