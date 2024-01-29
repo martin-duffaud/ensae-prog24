@@ -12,7 +12,7 @@ class Solver(Grid):
         """
         n = self.n
         m = self.m
-        while not self.is_sorted :
+        while not self.is_sorted() :
             for i in range (m):
                 for j in range (n):
                     if j < n-1 :

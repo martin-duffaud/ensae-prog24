@@ -3,8 +3,8 @@ import sys
 sys.path.append("../swap_puzzle/")
 
 import unittest 
-from grid import Grid
-from solver import Solver
+from swap_puzzle import Grid
+from swap_puzzle import Solver
 
 class Test_get_solution(unittest.TestCase):
     def test_grid1(self):
