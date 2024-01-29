@@ -118,4 +118,17 @@ class Grid():
             grid = Grid(m, n, initial_state)
         return grid
 
+    def display(self):
+        n=self.n
+        m=self.m
+        colonnes=[i for i in range (n)]
+        lignes=[i for i in range (m)]
+        cases=[[self.state[j][i] for i in range(n)] for j in range(m)]
+
+
+
+
+        table=plt.table(cellText=cases, rowLabels=lignes, colLabels=colonnes, rowColours=["blue"]*m, colColours=["blue"]*n)
+        plt.show()
+
 
