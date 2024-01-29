@@ -97,8 +97,27 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        liste_chemins=[[src]]
+        aparcourir=[src]
+        parcourus=[src]
+        while aparcourir!=[]:
+            s=aparcourir[0]
+            aparcourir=aparcourir[1:]
+            "on complète les chemins en récupérant le chemin finissant par s"
+            for chemin in liste_chemins :
+                if chemin[len(chemin)-1]==s:
+                    chemin_a_completer=chemin
+                    liste_chemins.remove(chemin)
+            "on parcourt tous les voisins s'ils n'ont pas déjà été parcourus"
+            for voisin in self.graph[s]:
+                if not (voisin in parcourus):
+                    liste_chemins.append(chemin_a_completer+[voisin])
+                    aparcourir.append(voisin)
+                    parcourus.append(voisin)
+                if voisin==dst:
+                    return chemin_a_completer+[voisin]
+        return None
+
 
     @classmethod
     def graph_from_file(cls, file_name):
