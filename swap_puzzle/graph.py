@@ -115,7 +115,7 @@ class Graph:
                     aparcourir.append(voisin)
                     parcourus.append(voisin)
                 if voisin==dst:
-                    return chemin_a_completer+[voisin]
+                    return (len(chemin_a_completer), chemin_a_completer+[voisin])
         return None
 
 
