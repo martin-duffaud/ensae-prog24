@@ -125,11 +125,58 @@ class Grid():
         colonnes=[i for i in range (n)]
         lignes=[i for i in range (m)]
         cases=[[self.state[j][i] for i in range(n)] for j in range(m)]
-
-
-
-
         table=plt.table(cellText=cases, rowLabels=lignes, colLabels=colonnes, rowColours=["blue"]*m, colColours=["blue"]*n)
         plt.show()
+
+    @staticmethod
+    def permutation(lst):
+        if len(lst) == 0:
+            return []
+        if len(lst) == 1:
+            return [lst]
+        l = []
+        """
+        c'est une fonction récursive : pour toutes les permutations d'un ensemble à n éléments, on considère toutes les permutations 
+        de tous les sous-ensembles à n-1 éléments en ajoutant au début de toutes ces permutations l'élément qu'on n'a pas considéré
+        """
+        for i in range(len(lst)):
+            m = lst[i]
+            sous_lst = lst[:i] + lst[i+1:]
+        for p in permutation(sous_lst):
+            l.append([m] + p)
+        return l
+
+    @staticmethod
+    def gridlist_from_permlist(n,m):    
+        """cette fonction permet de construire la liste des grilles à partir de la liste des permutations
+        """
+        permlist = permutation([i for i in range(1,n*m +1)])
+        liste_grilles = []
+        def grid_from_perm(s):
+            grille = []    
+            for i in range(m):
+                ligne_i = []
+                for j in range(n):
+                    ligne_i.append(s[n*i + j])
+                grille.append(ligne_i)
+            return grille
+
+        for s in permlist:
+            liste_grilles.append(grid_from_perm(s))
+       
+        return liste_grilles
+    @staticmethod
+    def grilles_voisines(self):
+        L=[]
+        S= all_swaps_possible(g)
+        for k in range(len(S)):
+            g_swap=np.copy(g)
+            swap(g_swap,S[k][0],S[k][1])
+            L.append(g_swap)
+        return L
+    
+            
+
+
 
 
