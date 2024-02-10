@@ -19,3 +19,20 @@ Question 3 :
   dans la classe Solver. Cette propostion avait déjà été évoqué avec le chargé de TD, et donc ne fera pas l'objet de précisions
   supplémentaires, sauf demande du correcteur après le premier rendu. Notez seulement que get_solution donne une solutions avec une
   meilleure complexité, en O(mn*(max(m+n))) selon nos calculs.
+
+Question 7 : 
+
+  Techniquement, construct_graphe a une complexité en O((n*m)!^3) car on fait un while sur toutes les grilles possibles de taille n*m 
+  (en temps (n*m)!), puis on les parcourt toutes (temps en (n*m)!), puis on parcourt tous les noeuds du graphe (temps encore en (n*m)!).
+  Le graphe construit a (n*m)! noeuds (qui correspondent aux grilles et donc aux permutations de l’ensemble {1,2,..., n*m}) et comme 
+  c’est un arbre il a (n*m) -1 arêtes.
+
+
+
+
+
+
+
+
+
+
