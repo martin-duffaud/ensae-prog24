@@ -5,7 +5,7 @@ class Solver(Grid):
     A solver class, to be implemented.
     """
 
-    def get_solution(self):
+    def get_solution(self):  # Question 3
         """
         Solves the grid and returns the sequence of swaps at the format 
         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...]. 
@@ -46,7 +46,7 @@ class Solver(Grid):
     every square to its right neighbor and then its bottom neighbor.
     """
 
-    def get_solution2(self):
+    def get_solution2(self):  # Question 3
         """
         Solves the grid and returns the sequence of swaps at the format 
         [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...]. 

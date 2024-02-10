@@ -81,7 +81,7 @@ class Graph:
         self.nb_edges += 1
         self.edges.append((node1, node2))
 
-    def bfs(self, src, dst): 
+    def bfs(self, src, dst):  # Question 5
         """
         Finds a shortest path from src to dst by BFS.  
 
