@@ -6,4 +6,16 @@ Question 3 :
   réalise au plus m+n swaps, la longueur de la solution est mn*(m+n).
 
   Optimalité et terminaison :
-  Comme l'algorithme 
+  Comme l'algorithme replace successivement 1, ..., mn dans cet ordre, la fonction termine et donne une solution valide.
+  Néanmoins, comme les opérations sur chacun des éléments 1, ..., mn sont indépendantes, dans le sens ou le déplacement 
+  de i, lorsque 1, ..., i-1 sont déjà rangés, peut modifier les positions des éléments non encore rangés, elles ne cherchent 
+  pas nécessairement à faire les déplacements les plus adéquats, tant que l'élément i arrive au bon endroit. Ainsi, un
+  nombre important d'opérations ne sont pas exploités, voire inutiles. On pourrait, pour améliorer l'algorithme, essayer 
+  de décider, en fonction des swaps possibles pour permettre a i d'arriver au bon endroit, de choisir le déplacement qui
+  aurait l'influence la plus positive sur les éléments non encore rangés.
+
+  Remarque supplémentaires : 
+  Une autre proposition d'algorithme, considérée comme "naïve" par le binôme est disponible également sous le nom de get_solution2
+  dans la classe Solver. Cette propostion avait déjà été évoqué avec le chargé de TD, et donc ne fera pas l'objet de précisions
+  supplémentaires, sauf demande du correcteur après le premier rendu. Notez seulement que get_solution donne une solutions avec une
+  meilleure complexité, en O(mn*(max(m+n))) selon nos calculs.
