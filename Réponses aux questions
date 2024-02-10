@@ -1,2 +1,9 @@
 Question 3 : 
 
+  Complexité et terminaison : 
+  research est en O(mn), relocate fait appel a research puis réalise au plus m+n swaps, donc est en O(mn+m+n)=O(mn).
+  Comme get_solution fait appel mn fois a relocate, elle est en O((mn)^2). Comme research, qui est appelée mn fois 
+  réalise au plus m+n swaps, la longueur de la solution est mn*(m+n).
+
+  Optimalité et terminaison :
+  Comme l'algorithme 
