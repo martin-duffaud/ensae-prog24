@@ -80,7 +80,7 @@ class Grid():
         i2, j2 = cell2
         if i1 == i2 and abs(j1-j2) == 1 or j1 == j2 and abs(i1-i2):
             self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
-        else :
+        else:
             raise Exception("Sorry, this swap is not allowed")
 
     def swap_seq(self, cell_pair_list):  # Question 2
@@ -100,7 +100,7 @@ class Grid():
     def grid_from_file(cls, file_name): 
         """
         Creates a grid object from class Grid, initialized with the information from the file file_name.
-        
+    
         Parameters: 
         -----------
         file_name: str
@@ -170,9 +170,9 @@ class Grid():
 
         for s in permlist:
             liste_grilles.append(grid_from_perm(s))
-       
+   
         return liste_grilles
-    
+
     def all_swaps_possible(self):  # Question 6
         list_swaps = []
         m, n = self.m, self.n
@@ -199,7 +199,7 @@ class Grid():
             g_temp.swap(S[k][0], S[k][1])
             L.append(g_temp.state)
         return L
-    
+
     def construct_graph(self):  # Question 7
         """ 
         on considère la liste de toutes les grilles de taille n*m à partir de la fonction qui génère toutes les
@@ -237,7 +237,7 @@ class Grid():
             for v in range(len(traitees)):
                 del (gl[v])
         return gr
-    
+
     def bfs_swap(self):  # Question 7
         """
         cette fonction a pour but de reproduire la séquence de swaps qui permet de passer d'une grille quelconque à la grille triée
@@ -256,7 +256,7 @@ class Grid():
                 if e1 is not None and e2 is not None:
                     break
             return e1, e2
-        
+
         """
         on construit le graphe des grilles et on applique le bfs
         """
@@ -270,3 +270,52 @@ class Grid():
         for k in range(len(chemin)-1):
             g1, g2 = chemin[k], chemin[k+1]
             self.swap(find_perm(g1, g2))
+
+
+def final_bfs(self, dst):  # Question 8
+    """
+    il faut associer une clé unique à chaque grille
+    """
+    src = self
+    liste_grilles = Grid(self.m, self.n).gridlist_from_permlist()
+    cle_src = liste_grilles.index(src.state)
+    g = Graph([cle_src])
+    liste_chemins = [[src]]
+    aparcourir = [src]
+    parcourus = [src]
+    while aparcourir != []:
+        s = aparcourir[0]
+        aparcourir.remove(0)
+        cle_s = liste_grilles.index(s.state)
+        print(cle_s)
+        """
+        on complète les chemins en récupérant le chemin finissant par s
+        """
+        for chemin in liste_chemins:
+            if chemin[len(chemin)-1] == s:
+                chemin_a_completer = chemin
+                liste_chemins.remove(chemin)
+        """
+        on crée la liste de toutes les grilles voisines de s
+        """
+        V_tmp = s.grilles_voisines()
+        V = []
+        for i in range(len(V_tmp)):
+            v = Grid(self.m, self.n)
+            v.state = V_tmp[i]
+            V.append(v)
+        """
+        on rajoute au graphe les voisins de s qui ne sont pas déjà parcourus ni à parcourir
+        """
+        for voisin_possible in V:
+            if (voisin_possible not in aparcourir) and (voisin_possible not in parcourus):
+                try:
+                    g.graph[cle_s].append(voisin_possible)
+                except KeyError:
+                    g.graph[cle_s] = [voisin_possible]
+                liste_chemins.append(chemin_a_completer+[voisin_possible])
+                aparcourir.append(voisin_possible)
+                parcourus.append(voisin_possible)
+            if voisin_possible == dst:
+                return (len(chemin_a_completer), chemin_a_completer+[voisin_possible])
+    return None
