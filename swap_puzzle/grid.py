@@ -189,12 +189,15 @@ class Grid():
         return list_swaps
 
     def grilles_voisines(self):  # Question 6
+        """
+        cette fonction renvoie la liste de toutes les grilles voisines d'une grille, au sens où elles sont accessibles en un seul swap
+        """
         L = []
         S = self.all_swaps_possible()
         for k in range(len(S)):
-            g_swap = Grid(self.m, self.n, np.copy(self.state))
-            g_swap.swap(S[k][0], S[k][1])
-            L.append(g_swap.state)
+            g_temp=Grid(self.m,self.n,copy.deepcopy(self.state))
+            g_temp.swap(S[k][0], S[k][1])
+            L.append(g_temp.state)
         return L
     
     def construct_graph(self):  # Question 7
@@ -206,9 +209,10 @@ class Grid():
         n, m = self.n, self.m
         gl = self.gridlist_from_permlist()[1:]
         """
-        Création du graphe gr, initialisé avec le noeud objectif, qui est la grille trillée
+        Création du graphe gr, initialisé avec le noeud objectif, qui est la grille triée
         """
-        gr = Graph([Grid(n, m)])
+        gr = Graph([Grid(m, n)])
+
         """ 
         on cherche à vider la liste de toutes les grilles possibles: on la parcourt tant qu'elle est non vide
         """
@@ -219,24 +223,29 @@ class Grid():
                 pour chaque grille à ajouter dans le graphe, on parcourt tous les noeuds (grilles) du graphe 
                 en cours de construction ; quand un noeud du graphe est voisin de la grille que l'on parcourt 
                 (ce que l'on teste avec la fonction grilles_voisines), on associe les deux grilles en ajoutant 
-                l'arete voulue
+                l'arête voulue
                 """
                 for j in range(len(gr.nodes)):
-                    if gl[i] in gr.nodes[j].grilles_voisines():
+                    if gl[i] in (gr.nodes[j]).grilles_voisines():
                         traitees.append(i)
                         gr.nodes.append(gl[i])
                         gr.add_edge(gl[i], gr.nodes[j])
                         break
-        """ 
-        on supprime toutes les grilles qu'on a pu rajouter au graphe
-        """            
-        for v in range(len(traitees)):
-            del (gl[v])
+            """ 
+            on supprime toutes les grilles qu'on a pu rajouter au graphe
+            """            
+            for v in range(len(traitees)):
+                del (gl[v])
         return gr
     
     def bfs_swap(self):  # Question 7
-
+        """
+        cette fonction a pour but de reproduire la séquence de swaps qui permet de passer d'une grille quelconque à la grille triée
+        """
         def find_perm(g1, g2):
+            """
+            cette fonction permet de trouver le swap qui a permis de passer d'une grille à une autre étant données ces deux grilles
+            """
             e1, e2 = None, None
             for i in range(self.m):
                 for j in range(self.n):
@@ -247,17 +256,17 @@ class Grid():
                 if e1 is not None and e2 is not None:
                     break
             return e1, e2
-
+        
+        """
+        on construit le graphe des grilles et on applique le bfs
+        """
         gr = self.construct_graph()
         source = self.state
         but = [[i*j for j in range(1, self.n + 1)] for i in range(1, self.m + 1)]
         longueur_chemin, chemin = gr.bfs(source, but)
-    
+        """
+        on effectue la séquence de swaps du chemin trouvé par bfs
+        """
         for k in range(len(chemin)-1):
             g1, g2 = chemin[k], chemin[k+1]
             self.swap(find_perm(g1, g2))
-            
-
-
-
-
