@@ -3,6 +3,7 @@ This is the grid module. It contains the Grid class and its associated methods.
 """
 import numpy as np
 import random
+import heapq as hq
 
 import sys 
 sys.path.append("swap_puzzle/")
@@ -271,51 +272,92 @@ class Grid():
             g1, g2 = chemin[k], chemin[k+1]
             self.swap(find_perm(g1, g2))
 
+    def final_bfs(self, dst):  # Question 8
+        """
+        il faut associer une clé unique à chaque grille
+        """
+        src = self
+        liste_grilles = Grid(self.m, self.n).gridlist_from_permlist()
+        cle_src = liste_grilles.index(src.state)
+        g = Graph([cle_src])
+        liste_chemins = [[src]]
+        aparcourir = [src]
+        parcourus = [src]
+        while aparcourir != []:
+            s = aparcourir[0]
+            aparcourir.remove(0)
+            cle_s = liste_grilles.index(s.state)
+            print(cle_s)
+            """
+            on complète les chemins en récupérant le chemin finissant par s
+            """
+            for chemin in liste_chemins:
+                if chemin[len(chemin)-1] == s:
+                    chemin_a_completer = chemin
+                    liste_chemins.remove(chemin)
+            """
+            on crée la liste de toutes les grilles voisines de s
+            """
+            V_tmp = s.grilles_voisines()
+            V = []
+            for i in range(len(V_tmp)):
+                v = Grid(self.m, self.n)
+                v.state = V_tmp[i]
+                V.append(v)
+            """
+            on rajoute au graphe les voisins de s qui ne sont pas déjà parcourus ni à parcourir
+            """
+            for voisin_possible in V:
+                if (voisin_possible not in aparcourir) and (voisin_possible not in parcourus):
+                    try:
+                        g.graph[cle_s].append(voisin_possible)
+                    except KeyError:
+                        g.graph[cle_s] = [voisin_possible]
+                    liste_chemins.append(chemin_a_completer+[voisin_possible])
+                    aparcourir.append(voisin_possible)
+                    parcourus.append(voisin_possible)
+                if voisin_possible == dst:
+                    return (len(chemin_a_completer), chemin_a_completer+[voisin_possible])
+        return None
+    
+    def astar(self, dst):  # Question 1 ; Séances 3 et 4
 
-def final_bfs(self, dst):  # Question 8
-    """
-    il faut associer une clé unique à chaque grille
-    """
-    src = self
-    liste_grilles = Grid(self.m, self.n).gridlist_from_permlist()
-    cle_src = liste_grilles.index(src.state)
-    g = Graph([cle_src])
-    liste_chemins = [[src]]
-    aparcourir = [src]
-    parcourus = [src]
-    while aparcourir != []:
-        s = aparcourir[0]
-        aparcourir.remove(0)
-        cle_s = liste_grilles.index(s.state)
-        print(cle_s)
-        """
-        on complète les chemins en récupérant le chemin finissant par s
-        """
-        for chemin in liste_chemins:
-            if chemin[len(chemin)-1] == s:
-                chemin_a_completer = chemin
-                liste_chemins.remove(chemin)
-        """
-        on crée la liste de toutes les grilles voisines de s
-        """
-        V_tmp = s.grilles_voisines()
-        V = []
-        for i in range(len(V_tmp)):
-            v = Grid(self.m, self.n)
-            v.state = V_tmp[i]
-            V.append(v)
-        """
-        on rajoute au graphe les voisins de s qui ne sont pas déjà parcourus ni à parcourir
-        """
-        for voisin_possible in V:
-            if (voisin_possible not in aparcourir) and (voisin_possible not in parcourus):
-                try:
-                    g.graph[cle_s].append(voisin_possible)
-                except KeyError:
-                    g.graph[cle_s] = [voisin_possible]
-                liste_chemins.append(chemin_a_completer+[voisin_possible])
-                aparcourir.append(voisin_possible)
-                parcourus.append(voisin_possible)
-            if voisin_possible == dst:
-                return (len(chemin_a_completer), chemin_a_completer+[voisin_possible])
-    return None
+        '''
+        Comme heuristique est utilisé comme un key function pour ordonner la file,
+        sa présence dans la fonction astar, bien que peu élégante, est nécessaire
+        '''
+
+        def heuristique(grille):  # Question 1 ; Séances 3 et 4
+            s = 0
+            for i in range(grille.m):
+                for j in range(grille.n):
+                    k = grille.state[i][j]
+                    itarget = k % grille.n
+                    jtarget = k - itarget*grille.n
+                    s += abs(i - itarget) + abs(j - jtarget)
+                    return s
+
+        traites = []
+        liste_chemins = [[self]]
+        openList = hq.merge(key=heuristique)
+        openList.push(self)
+        while openList != [] :
+            u = openList.pop()
+            for chemin in liste_chemins:
+                if chemin[len(chemin)-1] == u:
+                    chemin_a_completer = chemin
+                    liste_chemins.remove(chemin)
+                    if u.state == dst.state:  
+                        return chemin_a_completer
+            
+            """
+            on introduit la liste de toutes les grilles voisines de s
+            """
+            liste_voisins = u.grilles_voisines()
+            for v in liste_voisins:
+                if not (v in traites or (v in openList and v.heuristique < u.heuristique + 1)):
+                    openList.push(v)
+                    liste_chemins.append(chemin_a_completer + [v])
+            traites.ajouter(u)
+        raise Exception("Error")
+
