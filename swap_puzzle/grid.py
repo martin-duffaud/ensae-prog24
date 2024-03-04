@@ -323,16 +323,21 @@ class Grid():
     def astar(self, dst):  # Question 1 ; Séances 3 et 4
 
         '''
-        Comme heuristique est utilisé comme un key function pour ordonner la file,
-        sa présence dans la fonction astar, bien que peu élégante, est nécessaire
+        Comme la fonction heuristique est utilisée comme une key function pour ordonner 
+        la file, sa présence dans la fonction astar, bien que peu élégante, est nécessaire.
+        L'heuristique choisie donne la somme des distances de Manhattan (norme 1) 
+        pour chaque élément de la grille entre leur représentation dans R2 par 
+        les coordonnées (i,j) correspondant à la ligne i et colonne j où se trouve 
+        l'élément, et l'emplacement (itarget, jtarget) où il serait si la grille était
+        triée
         '''
 
-        def heuristique(grille):  # Question 1 ; Séances 3 et 4
+        def heuristique(grille): 
             s = 0
             for i in range(grille.m):
                 for j in range(grille.n):
                     k = grille.state[i][j]
-                    itarget = k % grille.n
+                    itarget = k // grille.n
                     jtarget = k - itarget*grille.n
                     s += abs(i - itarget) + abs(j - jtarget)
                     return s
@@ -360,4 +365,92 @@ class Grid():
                     liste_chemins.append(chemin_a_completer + [v])
             traites.ajouter(u)
         raise Exception("Error")
+
+    '''
+    Question 2 : voici quelques exemples d'heuristiques possibles dans notre
+    cadre d'étude
+    '''
+
+    '''
+    Voici une première alternative à l'heuristique utilisée dans astar.
+    Comme les grilles sont des permutations sur {1, ..., mn}, la distance de 
+    Kendall-Tau, dKT, qui donne  le nombre de paires d’éléments qui sont en désaccord 
+    par rapport à leur ordre. En particulier, dans notre cas, on compare une grille 
+    avec l'identité, donc on va simplement calculer le nombre d'inversion d'une permutation.
+    si g est une grille et Id est l'identité, le nombre d'inversion de g est dKT(g, Id).
+    
+    En pratique, la distance de Kendall Tau est équivalente au nombre de swaps effectués 
+    par le Tri à Bulle. Elle prend ainsi ses valeurs entre 0 et mn
+
+    L'intérêt de cette heuristique est qu'elle est par nature fondée sur le problème 
+    de recherche d'un nombre de swaps optimal entre deux grilles, puisqu'elle mesure justement
+    cette valeur.
+
+    L'implémentation naive est en O((mn)^2). Cependant, comme on compare toujours une grille avec 
+    l'identité, l'utilisation du tri fusion permet, en comptant le nombre de "sauts" des éléments 
+    de la 2e liste lors de la fusion, d'obtenir un temps de calcul en O((mnlog(mn))).
+    '''
+
+    def kendall_tau_naif(self):  # Question 2 ; Séances 3 et 4
+        s = 0
+        n, m = self.m, self.n
+        for a in range(m*n):
+            for b in range(m*n):
+                if a < b and self.state[a//n][a - n * a//n] > self.state[b//n][b - n * b//n]:
+                    s += 1
+        return s
+    
+    '''
+    Pour la question 4 et la création de niveaux de difficulté, le fait
+    d'utiliser la distance de Kendall-Tau comme heuristique simplifie 
+    grandement le choix de grille à effectuer : on aura qu'à, à partir
+    de l'identité, réaliser un certain nombre d'inversions pour choisir
+    la difficulté. On remplace donc l'heuristique du code de astar 
+    (distance de Manhattan) par celle de Kendall-Tau. On suppose donc
+    que ce changement a été effectué (ce qui revient à remplacer les
+    lignes 336 à 343 par les lignes 395 à 401).
+
+    On choisit 4 niveaux de difficultés. Soit g une grille.
+    En notant dmax = mn (qui est la valeur maximale pour dKT(g, Id) 
+    comme on l'a vu précédemment), on a :
+    - La difficulté du jeu est EASY:= 1 ssi         1 <= dKT(g, ID) <= dmax//4
+    - La difficulté du jeu est INTERMEDIATE:= 2 ssi dmax//4 < dKT(g, ID) <= dmax//2
+    - La difficulté du jeu est DIFFICULT := 3 ssi   dmax//2 < dKT(g, ID) <= 3dmax//4
+    - La difficulté du jeu est HARDCORE := 4 ssi    3dmax//4 < dKT(g, ID) <= dmax
+    '''
+
+    def level_starter(self, difficulty):  # Question 4 ; Séances 3 et 4
+        n, m = self.n, self.m
+        dmax = m*n
+
+        if difficulty == 1:
+            k = random.randint(1, dmax//4)
+        if difficulty == 1:
+            k = random.randint(dmax//4 + 1, dmax//2)
+        if difficulty == 1:
+            k = random.randint(dmax//2 + 1, 3*dmax//4)
+        if difficulty == 1:
+            k = random.randint(3*dmax//4 + 1, dmax)
+
+        inversions = random.sample([a for a in range(m*n)], k)
+        starter = Grid(m, n)
+
+        for a in range(k-1):
+            i1, i2 = inversions[a]//n, inversions[a+1]//n
+            j1, j2 = a - n*(inversions[a]//n), a+1 - n*(inversions[a+1]//n)
+            starter.state[i1][j1], starter.state[i2][j2] = starter.state[i2][j2], starter.state[i1][j1]
+
+        return starter
+
+
+
+
+    
+
+
+    
+
+
+
+
 
