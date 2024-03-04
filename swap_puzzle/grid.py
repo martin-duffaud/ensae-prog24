@@ -420,16 +420,15 @@ class Grid():
     '''
 
     def level_starter(self, difficulty):  # Question 4 ; Séances 3 et 4
-        n, m = self.n, self.m
+        n, m = self.m, self.n
         dmax = m*n
-
         if difficulty == 1:
             k = random.randint(1, dmax//4)
-        if difficulty == 1:
+        elif difficulty == 2:
             k = random.randint(dmax//4 + 1, dmax//2)
-        if difficulty == 1:
+        elif difficulty == 3:
             k = random.randint(dmax//2 + 1, 3*dmax//4)
-        if difficulty == 1:
+        elif difficulty == 4:
             k = random.randint(3*dmax//4 + 1, dmax)
 
         inversions = random.sample([a for a in range(m*n)], k)
