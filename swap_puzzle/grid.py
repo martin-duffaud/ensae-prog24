@@ -337,8 +337,8 @@ class Grid():
             for i in range(grille.m):
                 for j in range(grille.n):
                     k = grille.state[i][j]
-                    itarget = k // grille.n
-                    jtarget = k - itarget*grille.n
+                    itarget = k // grille.n - 1
+                    jtarget = k%grille.n
                     s += abs(i - itarget) + abs(j - jtarget)
                     return s
 
@@ -396,7 +396,7 @@ class Grid():
         n, m = self.m, self.n
         for a in range(m*n):
             for b in range(m*n):
-                if a < b and self.state[a//n][a - n * a//n] > self.state[b//n][b - n * b//n]:
+                if a < b and self.state[a//n - 1][a%n] > self.state[b//n - 1][b%n]:
                     s += 1
         return s
     
@@ -437,7 +437,7 @@ class Grid():
 
         for a in range(k-1):
             i1, i2 = inversions[a]//n, inversions[a+1]//n
-            j1, j2 = a - n*(inversions[a]//n), a+1 - n*(inversions[a+1]//n)
+            j1, j2 = a%n, (a+1)%n
             starter.state[i1][j1], starter.state[i2][j2] = starter.state[i2][j2], starter.state[i1][j1]
 
         return starter
