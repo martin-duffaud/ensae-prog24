@@ -331,38 +331,43 @@ class Grid():
         triée. C'est en quelque sorte sa distance à la grille objectif.
         '''
 
-        def heuristique(grille): 
+        m=self.m
+        n=self.n
+        def heuristique(grille,m,n): 
             s = 0
-            for i in range(grille.m):
-                for j in range(grille.n):
-                    k = grille.state[i][j]
-                    itarget = k // grille.n - 1
-                    jtarget = k%grille.n
+            for i in range(m):
+                for j in range(n):
+                    k = grille[i][j]
+                    itarget = k // n - 1
+                    jtarget = k%n
                     s += abs(i - itarget) + abs(j - jtarget)
                     return s
 
         traites = []
         liste_chemins = [[self]]
-        openList = hq.merge(key=heuristique)
-        openList.push(self)
+        openList = self.gridlist_from_permlist()
+        hq.merge(openList,key=heuristique)
+        hq.heappush(openList,self.state)
         while openList != [] :
-            u = openList.pop()
+            u = hq.heappop(openList)
             for chemin in liste_chemins:
-                if chemin[len(chemin)-1] == u:
+                if chemin[len(chemin)-1].state == u:
                     chemin_a_completer = chemin
                     liste_chemins.remove(chemin)
-                    if u.state == dst.state:  
+                    if u == dst.state:  
                         return chemin_a_completer
             
             """
             on introduit la liste de toutes les grilles voisines de s
             """
-            liste_voisins = u.grilles_voisines()
+            grid_u=Grid(m,n,u)
+            liste_voisins = grid_u.grilles_voisines()
             for v in liste_voisins:
-                if not (v in traites or (v in openList and v.heuristique < u.heuristique + 1)):
-                    openList.push(v)
-                    liste_chemins.append(chemin_a_completer + [v])
-            traites.ajouter(u)
+                grid_v=Grid(m,n,v)
+                if not (v in traites or (v in openList and heuristique(v,m,n) < heuristique(u,m,n) + 1)):
+                    hq.heappush(openList,v)
+                    liste_chemins.append(chemin_a_completer + [grid_v])
+            traites.append(u)
         raise Exception("Error")
 
     '''
