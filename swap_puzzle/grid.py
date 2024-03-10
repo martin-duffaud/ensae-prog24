@@ -326,10 +326,9 @@ class Grid():
         Comme la fonction heuristique est utilisée comme une key function pour ordonner 
         la file, sa présence dans la fonction astar, bien que peu élégante, est nécessaire.
         L'heuristique choisie donne la somme des distances de Manhattan (norme 1) 
-        pour chaque élément de la grille entre leur représentation dans R2 par 
-        les coordonnées (i,j) correspondant à la ligne i et colonne j où se trouve 
-        l'élément, et l'emplacement (itarget, jtarget) où il serait si la grille était
-        triée
+        pour chaque élément de la grille, notées (i,j) (correspondant à la ligne i et colonne j 
+        où se trouve l'élément), et l'emplacement (itarget, jtarget) où il serait si la grille était
+        triée. C'est en quelque sorte sa distance à la grille objectif.
         '''
 
         def heuristique(grille): 
@@ -367,7 +366,7 @@ class Grid():
         raise Exception("Error")
 
     '''
-    Question 2 : voici quelques exemples d'heuristiques possibles dans notre
+    Question 2 : voici un autre exemple d'heuristique possible dans notre
     cadre d'étude
     '''
 
