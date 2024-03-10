@@ -1,3 +1,5 @@
+SÉANCES 1 ET 2 :
+
 Question 3 : 
 
   Complexité et terminaison : 
@@ -26,6 +28,36 @@ Question 7 :
   (en temps (n*m)!), puis on les parcourt toutes (temps en (n*m)!), puis on parcourt tous les noeuds du graphe (temps encore en (n*m)!).
   Le graphe construit a (n*m)! noeuds (qui correspondent aux grilles et donc aux permutations de l’ensemble {1,2,..., n*m}) et comme 
   c’est un arbre il a (n*m) -1 arêtes.
+
+SÉANCES 3 ET 4 :
+
+Question 5 : 
+
+  Pour étendre le jeu, on peut par exemple en interdire certains échanges de cases, ce qui implique de directement changer la fonction 
+  swap implémentée dans grid. On pourrait par exemple la réécrire de la manière suivante :
+
+      def swap_with_barriers(self, cell1, cell2, barriers_list):
+        """
+        Implements the swap operation between two cells. Raises an exception if the swap is not allowed.
+
+        Parameters: 
+        -----------
+        cell1, cell2: tuple[int]
+            The two cells to swap. They must be in the format (i, j) where i is the line and j the column number of the cell. 
+        barriers_list : list of tuples containing two cells in the format (i,j)
+        """
+        i1, j1 = cell1
+        i2, j2 = cell2
+        if (i1 == i2 and abs(j1-j2) == 1 or j1 == j2 and abs(i1-i2)) and (cell1,cell2) not in barriers_list and (cell2,cell1) not in barriers_list:
+            self.state[i1][j1], self.state[i2][j2] = self.state[i2][j2], self.state[i1][j1]
+        else:
+            raise Exception("Sorry, this swap is not allowed")
+
+Question 6 : 
+
+    Si la grille est 1xn, il s'agit juste d'un tri. Sa compléxité est en nlog(n), si on prend par exemple un tri fusion.
+    Si la grille est kxn, une stratégie peut être : dans un premier temps, réussir à mettre dans chaque ligne i (de 0 à k-1) 
+    les éléments (i*n)+1 jusqu'à (i*n)+n, puis trier chaque ligne comme précédemment.
 
 
 
